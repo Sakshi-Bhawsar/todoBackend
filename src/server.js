@@ -32,3 +32,7 @@ connectDB().then(() => {
     console.log(err, "Db connection fialed")
 })
 
+// Export for Vercel
+module.exports = app;
+module.exports.handler = serverless(app);
+
