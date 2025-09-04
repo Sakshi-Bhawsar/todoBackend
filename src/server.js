@@ -1,38 +1,34 @@
-const express = require("express")  // Here, we are importing the Express library into our project.
-const connectDB = require("../src/config/database")
-const authRouter = require("../src/routes/auth")
-const notesRouter = require("./routes/notes")
-const cookieParser = require('cookie-parser')
-const cors = require('cors')
+const express = require("express");
+const connectDB = require("../src/config/database");
+const authRouter = require("../src/routes/auth");
+const notesRouter = require("./routes/notes");
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
+const serverless = require("serverless-http"); // ✅ Import this
 
-const app = express(); //This line creates an Express application (an object).
-require("dotenv").config()
-app.use(express.json()) // for parsing application/json  ,req.body Contains key-value pairs of data submitted in the request body. By default, it is undefined, and is populated when you use body-parsing middleware such as express.json() or express.urlencoded().
-app.use(cookieParser())  // use  cookieParser to read cookies from req otherwise it show undfined
-app.use(cors({origin:"http://localhost:3000",credentials:true}))
+require("dotenv").config();
 
-// routes for path app.use() is middlware use to mount routes 
-app.use("/api/auth",authRouter);
-app.use("/api/notes",notesRouter);
+const app = express();
 
+// Middleware
+app.use(express.json());
+app.use(cookieParser());
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 
+// Routes
+app.use("/api/auth", authRouter);
+app.use("/api/notes", notesRouter);
 
 app.get("/", (req, res) => {
-    res.send("creating backend server for practice--")
-})
+  res.send("Backend server is running on Vercel 🚀");
+});
 
-connectDB().then(() => {
+// ✅ Connect DB (will run on first request, not before export)
+connectDB()
+  .then(() => console.log("DB connection successful"))
+  .catch((err) => console.log("DB connection failed", err));
 
-    app.listen(process.env.PORT, () => {
-        console.log(`app listen to port ${process.env.PORT}`)
-    })
-    console.log("db connection sucessful")
-
-}).catch((err) => {
-    console.log(err, "Db connection fialed")
-})
-
-// Export for Vercel
+// ❌ REMOVE app.listen()
+// ✅ Export for Vercel
 module.exports = app;
 module.exports.handler = serverless(app);
-
