@@ -1,7 +1,7 @@
 const express = require("express");
-const connectDB = require("../src/config/database");
-const authRouter = require("../src/routes/auth");
-const notesRouter = require("./routes/notes");
+const connectDB = require("./src/config/database");
+const authRouter = require("./src/routes/auth");
+const notesRouter = require("./src/routes/notes");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const serverless = require("serverless-http"); // ✅ Import this
